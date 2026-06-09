@@ -1,0 +1,20 @@
+# macOS
+   .DS_Store
+
+   # Windows
+   Thumbs.db
+   ehthumbs.db
+   Desktop.ini
+
+   # Editor / IDE
+   .vscode/
+   .idea/
+   *.swp
+   *.swo
+
+   # Node (if anyone runs npm scripts later)
+   node_modules/
+
+   # Build outputs / personal data
+   *.zip
+   multisearch-import.json
