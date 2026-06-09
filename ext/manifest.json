@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "MULTISEARCH",
+  "version": "0.2.3",
+  "description": "Right-click context menu search with categories, multi-fire, drag-reorder, import/export, and OpenSearch auto-detect.",
+  "permissions": [
+    "contextMenus",
+    "storage",
+    "tabs",
+    "scripting",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "action": {
+    "default_title": "MULTISEARCH",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "omnibox": {
+    "keyword": "ms"
+  },
+  "minimum_chrome_version": "114"
+}

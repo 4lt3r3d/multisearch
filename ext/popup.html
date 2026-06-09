@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MULTISEARCH</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Major+Mono+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body class="popup">
+
+<header class="pop-head">
+  <div class="pop-brand">
+    <span class="bracket">[</span><span class="name">MULTISEARCH</span><span class="bracket">]</span>
+  </div>
+  <div class="pop-page" id="page-info">
+    <span class="pop-page-title" id="page-title">—</span>
+    <span class="pop-page-host" id="page-host"></span>
+  </div>
+</header>
+
+<div class="pop-actions">
+  <button class="btn btn-primary" id="btn-detect">🔍 DETECT ENGINES</button>
+  <button class="btn" id="btn-options">OPTIONS</button>
+</div>
+
+<div class="pop-status" id="status"></div>
+
+<div class="pop-results" id="results"></div>
+
+<div class="pop-add-all" id="add-all-row" hidden>
+  <button class="btn btn-primary" id="btn-add-all">+ ADD ALL <span id="add-all-count"></span></button>
+</div>
+
+<div class="pop-manual" id="manual-section">
+  <button class="btn-link" id="btn-toggle-manual">+ ADD MANUALLY FROM URL</button>
+  <div class="manual-form" id="manual-form" hidden>
+    <button class="manual-close" id="btn-manual-close" title="Close">×</button>
+    <p class="muted">Paste a search-result URL and your exact query. The query in the URL becomes a <code>%s</code> placeholder.</p>
+    <label class="field">
+      <span class="field-label">SEARCH-RESULT URL</span>
+      <input type="text" id="manual-url" placeholder="https://example.com/search?q=hello+world" autocomplete="off">
+    </label>
+    <label class="field">
+      <span class="field-label">EXACT QUERY YOU SEARCHED</span>
+      <input type="text" id="manual-query" placeholder="hello world" autocomplete="off">
+    </label>
+    <button class="btn btn-primary" id="btn-manual-template">TEMPLATE & EDIT</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="popup.js" type="module"></script>
+</body>
+</html>

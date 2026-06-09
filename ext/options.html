@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MULTISEARCH // CONFIG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=Major+Mono+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-bracket">[</span><span class="brand-name">MULTISEARCH</span><span class="brand-bracket">]</span>
+    <span class="brand-ver" id="version">v0.0.0</span>
+  </div>
+  <div class="topbar-actions">
+    <div class="prefix-display" title="Address-bar omnibox prefix">
+      <span class="prefix-label">PREFIX</span>
+      <span class="prefix-value" id="prefix-value">ms</span>
+    </div>
+    <button class="btn" id="btn-add-category-top">+ CATEGORY</button>
+    <button class="btn" id="btn-find-broken" title="Find engines with malformed URLs (e.g. multiple %s placeholders from a bad import)">FIND BROKEN</button>
+    <button class="btn" id="btn-import">IMPORT</button>
+    <button class="btn" id="btn-export">EXPORT</button>
+    <button class="btn" id="btn-settings">SETTINGS</button>
+  </div>
+</header>
+
+<div class="statbar">
+  <span class="stat"><span class="stat-num" id="stat-cats">0</span> CATEGORIES</span>
+  <span class="stat-sep">/</span>
+  <span class="stat"><span class="stat-num" id="stat-engs">0</span> ENGINES</span>
+  <span class="stat-sep">/</span>
+  <button class="stat-btn" id="btn-expand-all" title="Expand all categories">▾ EXPAND ALL</button>
+  <button class="stat-btn" id="btn-collapse-all" title="Collapse all categories">▴ COLLAPSE ALL</button>
+  <span class="stat-spacer"></span>
+  <span class="stat" id="prefix-mismatch" hidden style="color: var(--accent-dim)"></span>
+  <span class="stat sync-stat" id="sync-status">STORAGE OK</span>
+</div>
+
+<main class="container">
+  <div id="tree" class="tree"></div>
+
+  <div class="root-actions">
+    <button class="btn btn-add" data-add="engine">+ STANDALONE ENGINE</button>
+    <span style="flex:1"></span>
+    <div class="sort-dropdown-wrap">
+      <button class="btn" id="btn-sort-root" title="Sort options">SORT ▾</button>
+      <div class="sort-menu" id="sort-menu" hidden>
+        <button class="sort-option" data-sort="cat-priority">A→Z <span class="sort-suffix">(CATEGORIES FIRST)</span></button>
+        <button class="sort-option" data-sort="everything">A→Z <span class="sort-suffix">(EVERYTHING)</span></button>
+        <button class="sort-option" data-sort="custom">CUSTOM <span class="sort-suffix">(NO CHANGE)</span></button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <pre class="ascii-foot">[ END OF CONFIG // use %s as the placeholder in query URLs ]</pre>
+  </footer>
+</main>
+
+<!-- ========== MODALS ========== -->
+
+<div class="modal-backdrop" id="modal-backdrop"></div>
+
+<!-- engine editor -->
+<div class="modal" id="modal-engine">
+  <div class="modal-head">
+    <span class="modal-title" id="engine-modal-title">+ ENGINE</span>
+    <button class="modal-close" data-close>x</button>
+  </div>
+  <form class="modal-body" id="engine-form">
+    <label class="field">
+      <span class="field-label">NAME</span>
+      <input type="text" name="name" maxlength="60" required autocomplete="off">
+    </label>
+    <label class="field">
+      <span class="field-label">NICK <span class="field-hint">(short keyword, lowercase, no spaces)</span></span>
+      <input type="text" name="nick" maxlength="16" pattern="[-a-z0-9._]+" required autocomplete="off">
+    </label>
+    <label class="field">
+      <span class="field-label">QUERY URL <span class="field-hint">(use <code>%s</code> as the placeholder for the search term or image URL)</span></span>
+      <input type="text" name="query" required autocomplete="off" placeholder="https://example.com/?q=%s">
+    </label>
+    <label class="field checkbox-field">
+      <input type="checkbox" name="imageSearch">
+      <span>REVERSE IMAGE SEARCH ENGINE <span class="field-hint">(uses image URL instead of selected text)</span></span>
+    </label>
+    <div class="field-row">
+      <label class="field">
+        <span class="field-label">CATEGORY</span>
+        <select name="categoryId" id="engine-category-select"></select>
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" data-close>CANCEL</button>
+      <button type="submit" class="btn btn-primary">SAVE</button>
+    </div>
+  </form>
+</div>
+
+<!-- category editor -->
+<div class="modal" id="modal-category">
+  <div class="modal-head">
+    <span class="modal-title" id="category-modal-title">+ CATEGORY</span>
+    <button class="modal-close" data-close>x</button>
+  </div>
+  <form class="modal-body" id="category-form">
+    <label class="field">
+      <span class="field-label">NAME</span>
+      <input type="text" name="name" maxlength="32" required autocomplete="off">
+    </label>
+    <label class="field">
+      <span class="field-label">NICK <span class="field-hint">(used in address bar: <code id="cat-nick-preview">ms &lt;nick&gt; query</code>)</span></span>
+      <input type="text" name="nick" maxlength="16" pattern="[-a-z0-9._]+" required autocomplete="off">
+    </label>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" data-close>CANCEL</button>
+      <button type="submit" class="btn btn-primary">SAVE</button>
+    </div>
+  </form>
+</div>
+
+<!-- settings -->
+<div class="modal" id="modal-settings">
+  <div class="modal-head">
+    <span class="modal-title">SETTINGS</span>
+    <button class="modal-close" data-close>x</button>
+  </div>
+  <form class="modal-body" id="settings-form">
+    <label class="field checkbox-field">
+      <input type="checkbox" name="openInBackground">
+      <span>OPEN NEW TABS IN BACKGROUND</span>
+    </label>
+    <label class="field checkbox-field">
+      <input type="checkbox" name="uncategorizedFolder">
+      <span>GROUP UNCATEGORIZED ENGINES INTO A FOLDER LABELED [UNCATEGORIZED]</span>
+    </label>
+    <label class="field">
+      <span class="field-label">MAX TABS PER MULTI-SEARCH <span class="field-hint">(safety cap when firing a category)</span></span>
+      <input type="number" name="confirmMultiOver" min="1" max="50" required>
+    </label>
+    <div class="field" style="border:1px dashed var(--border);padding:12px;background:var(--bg)">
+      <span class="field-label">OMNIBOX KEYWORD</span>
+      <span class="muted">Current address-bar trigger: <code id="settings-prefix-display">ms</code></span>
+      <span class="field-warn">Chrome locks this to the value in <code>manifest.json</code>. To change it, edit <code>manifest.json</code> → <code>omnibox.keyword</code> and reload the extension at <code>chrome://extensions</code>.</span>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" data-close>CANCEL</button>
+      <button type="submit" class="btn btn-primary">SAVE</button>
+    </div>
+  </form>
+</div>
+
+<!-- detect engines: moved to popup.html in v0.1.4 -->
+
+<!-- import -->
+<div class="modal modal-wide" id="modal-import">
+  <div class="modal-head">
+    <span class="modal-title">IMPORT</span>
+    <button class="modal-close" data-close>x</button>
+  </div>
+  <div class="modal-body">
+    <p class="muted">Paste JSON, or paste TXT in format <code>site name: / nick: / query:</code> (auto-detected). Or choose a file.</p>
+    <input type="file" id="import-file" accept="application/json,.json,.txt,text/plain">
+    <textarea id="import-text" rows="14" placeholder='{ "schema": 1, "items": [...] }   OR   site name: google&#10;nick: g&#10;query: https://...'></textarea>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" data-close>CANCEL</button>
+      <button type="button" class="btn btn-danger" id="btn-import-merge">MERGE</button>
+      <button type="button" class="btn btn-primary" id="btn-import-replace">REPLACE</button>
+    </div>
+  </div>
+</div>
+
+<!-- toast -->
+<div class="toast" id="toast"></div>
+
+<script src="options.js" type="module"></script>
+</body>
+</html>
